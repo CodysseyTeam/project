@@ -7,7 +7,7 @@ from matplotlib.lines import Line2D
 def draw_full_area_map():
     """전체 지역 지도를 시각화하는 함수"""
     try:
-        df = pd.read_csv('full_map.csv')
+        df = pd.read_csv('result/full_map.csv')
         
         print('=== 전체 지역 지도 시각화 ===')
         
@@ -17,7 +17,7 @@ def draw_full_area_map():
         df['struct'] = df['struct'].replace('nan', '')
         
     except FileNotFoundError:
-        print('full_map.csv 파일이 없습니다.')
+        print('result/full_map.csv 파일이 없습니다.')
         return
         
     # 지도 설정
@@ -73,22 +73,20 @@ def draw_full_area_map():
     ax.set_title('Full Area Map - All Regions', fontsize=14)
     
     plt.tight_layout()
-    plt.savefig('map.png', dpi=150, bbox_inches='tight')
+    plt.savefig('result/map.png', dpi=150, bbox_inches='tight')
     plt.close()
     
-    print('전체 지도 시각화 완료: map.png 저장됨')
+    print('전체 지도 시각화 완료: result/map.png 저장됨')
 
 
 def main():
     """메인 실행 함수"""
-    print('=== map_draw.py 실행 시작 ===')
     
     # 전체 지역 지도 그리기
     draw_full_area_map()
     
-    print('\n=== map_draw.py 실행 완료 ===')
     print('생성된 파일:')
-    print('- map.png: 전체 지역 지도')
+    print('- result/map.png: 전체 지역 지도')
 
 
 if __name__ == '__main__':

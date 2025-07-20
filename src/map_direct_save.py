@@ -140,10 +140,6 @@ class PathFinder:
         print(f'전체 구조물 개수: {len(structures)}')
         print(f'구조물 위치들: {structures}')
         
-        if len(structures) > 8:  # 계산 복잡도 때문에 제한
-            print(f'구조물이 너무 많습니다 ({len(structures)}개). 처음 8개만 사용합니다.')
-            structures = structures[:8]
-        
         # 시작점이 구조물 목록에 없으면 추가
         if self.start_pos not in structures:
             print(f'시작점 {self.start_pos}이 구조물 목록에 없어서 추가합니다.')
@@ -171,7 +167,7 @@ class PathFinder:
         
         if failed_connections:
             print(f'연결되지 않은 구조물 쌍들: {failed_connections}')
-            print('일부 구조물이 고립되어 있어 완전한 투어가 불가능합니다.')
+            print('일부 구조물은 공사장과 겹쳐있어 생략합니다.')
             # 연결 가능한 구조물들만으로 투어 시도
             connected_structures = set()
             for (struct1, struct2) in structure_distances.keys():
@@ -330,8 +326,7 @@ def main():
     """메인 실행 함수"""
     try:
         # CSV 파일 읽기
-        print('CSV 파일을 읽는 중...')
-        map_data = pd.read_csv('full_map.csv')
+        map_data = pd.read_csv('result/full_map.csv')
         print(f'지도 데이터 로드 완료: {len(map_data)}개 셀')
         
         # PathFinder 초기화
@@ -350,10 +345,10 @@ def main():
             print(f'경로 단계 수: {len(shortest_path)}')
             
             # 경로를 DataFrame으로 저장
-            path_dataframe = save_path_to_dataframe(shortest_path, 'home_to_cafe.csv')
+            path_dataframe = save_path_to_dataframe(shortest_path, 'result/home_to_cafe.csv')
             
             # 지도 시각화
-            create_map_visualization(map_data, shortest_path, 'map_final.png', 
+            create_map_visualization(map_data, shortest_path, 'result/map_final.png', 
                                    '집에서 카페까지 최단 경로')
             
         else:
@@ -369,10 +364,10 @@ def main():
             print(f'경로 단계 수: {len(tour_path)}')
             
             # 투어 경로를 DataFrame으로 저장
-            tour_dataframe = save_path_to_dataframe(tour_path, 'optimal_tour.csv')
+            tour_dataframe = save_path_to_dataframe(tour_path, 'result/optimal_tour.csv')
             
             # 투어 지도 시각화
-            create_map_visualization(map_data, tour_path, 'tour_map.png', 
+            create_map_visualization(map_data, tour_path, 'result/map_tour.png', 
                                    '모든 구조물을 지나는 최적 투어')
         else:
             print('투어 경로를 찾을 수 없습니다.')
