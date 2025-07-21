@@ -27,22 +27,22 @@ class PathFinder:
         self.data_frame['struct'] = self.data_frame['struct'].replace('nan', '')
         
         # 시작점과 도착점 찾기
-        self.start_pos = self._find_structure_position('MyHome')
-        self.cafe_pos = self._find_structure_position('BandalgomCoffee')
-        self.all_structure_positions = self._find_all_structure_positions()
+        self.start_pos = self.find_structure_position('MyHome')
+        self.cafe_pos = self.find_structure_position('BandalgomCoffee')
+        self.all_structure_positions = self.find_all_structure_positions()
         
         print(f'시작점 (MyHome): {self.start_pos}')
         print(f'도착점 (BandalgomCoffee): {self.cafe_pos}')
         print(f'모든 구조물 위치: {self.all_structure_positions}')
         
-    def _find_structure_position(self, structure_name):
+    def find_structure_position(self, structure_name):
         """특정 구조물의 위치를 찾는 함수"""
         result = self.data_frame[self.data_frame['struct'] == structure_name]
         if result.empty:
             raise ValueError(f'{structure_name}을 찾을 수 없습니다.')
         return (int(result.iloc[0]['x']), int(result.iloc[0]['y']))
     
-    def _find_all_structure_positions(self):
+    def find_all_structure_positions(self):
         """모든 구조물의 위치를 찾는 함수"""
         structures = []
         structure_types = ['MyHome', 'BandalgomCoffee', 'Apartment', 'Building']
@@ -54,8 +54,8 @@ class PathFinder:
         
         return list(set(structures))  # 중복 제거
     
-    def _is_valid_position(self, x_coord, y_coord):
-        """유효한 위치인지 확인 (경계 내부이고 건설현장이 아님)"""
+    def is_valid_position(self, x_coord, y_coord):
+        """유효한 위치인지 확인 (경계 내부이고 건설현장이 아닌 경우)"""
         if (x_coord < self.min_x or x_coord > self.max_x or 
             y_coord < self.min_y or y_coord > self.max_y):
             return False
@@ -70,7 +70,7 @@ class PathFinder:
         
         return True
     
-    def _get_neighbor_positions(self, position):
+    def get_neighbor_positions(self, position):
         """인접한 유효한 위치들을 반환"""
         x_coord, y_coord = position
         neighbors = []
@@ -79,19 +79,19 @@ class PathFinder:
         directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
         for delta_x, delta_y in directions:
             new_x, new_y = x_coord + delta_x, y_coord + delta_y
-            if self._is_valid_position(new_x, new_y):
+            if self.is_valid_position(new_x, new_y):
                 neighbors.append((new_x, new_y))
         
         # 대각선 4방향
         diagonal_directions = [(1, 1), (1, -1), (-1, 1), (-1, -1)]
         for delta_x, delta_y in diagonal_directions:
             new_x, new_y = x_coord + delta_x, y_coord + delta_y
-            if self._is_valid_position(new_x, new_y):
+            if self.is_valid_position(new_x, new_y):
                 neighbors.append((new_x, new_y))
         
         return neighbors
     
-    def _calculate_distance(self, position1, position2):
+    def calculate_distance(self, position1, position2):
         """두 위치 간의 유클리드 거리 계산"""
         return ((position1[0] - position2[0])**2 + (position1[1] - position2[1])**2)**0.5
     
@@ -108,7 +108,7 @@ class PathFinder:
             current_position, path = queue.popleft()
             
             # 인접 노드들 확인
-            for neighbor in self._get_neighbor_positions(current_position):
+            for neighbor in self.get_neighbor_positions(current_position):
                 if neighbor in visited_nodes:
                     continue
                 
@@ -246,81 +246,71 @@ def save_path_to_dataframe(path, file_name):
         return None
 
 
-def create_map_visualization(data_frame, path, file_name='map_final.png', map_title='Path Finding Map'):
-    """지도와 경로를 시각화"""
-    figure, axes = plt.subplots(figsize=(14, 12))
-    axes.set_aspect('equal')
-    
-    max_x = int(data_frame['x'].max())
-    max_y = int(data_frame['y'].max())
-    min_x = int(data_frame['x'].min())
-    min_y = int(data_frame['y'].min())
-    
-    # 좌측 상단이 (1,1)이 되도록 설정
-    axes.set_xlim(min_x - 0.5, max_x + 0.5)
-    axes.set_ylim(max_y + 0.5, min_y - 0.5)  # y축 뒤집기
-    
-    # 격자 그리기
-    for x_coord in range(min_x, max_x + 1):
-        axes.axvline(x_coord + 0.5, color='lightgray', linewidth=0.5, alpha=0.7)
-    for y_coord in range(min_y, max_y + 1):
-        axes.axhline(y_coord + 0.5, color='lightgray', linewidth=0.5, alpha=0.7)
-    
-    # 구조물 시각화
-    for _, row in data_frame.iterrows():
-        x_coord, y_coord = int(row['x']), int(row['y'])
-        structure_type = row['struct']
+def create_map_visualization(df, path, file_name='map_final.png', map_title='Path Finding Map'):
+    """지도와 경로를 시각화하는 함수"""
+    df['struct'] = df['struct'].astype(str).str.strip()
+    df['struct'] = df['struct'].replace(['None', 'nan'], '')
+
+    fig, ax = plt.subplots(figsize=(15, 12))
+    ax.set_aspect('equal')
+
+    max_x = int(df['x'].max())
+    max_y = int(df['y'].max())
+    min_x = int(df['x'].min())
+    min_y = int(df['y'].min())
+
+    ax.set_xlim(min_x - 0.5, max_x + 0.5)
+    ax.set_ylim(max_y + 0.5, min_y - 0.5)
+
+    for x in range(min_x, max_x + 1):
+        ax.axvline(x + 0.5, color='lightgray', linewidth=0.3, alpha=0.5)
+    for y in range(min_y, max_y + 1):
+        ax.axhline(y + 0.5, color='lightgray', linewidth=0.3, alpha=0.5)
+
+    for _, row in df.iterrows():
+        x, y = int(row['x']), int(row['y'])
+        struct = row['struct']
         is_construction = row['ConstructionSite'] == 1
-        
+
         if is_construction:
-            axes.add_patch(Rectangle((x_coord - 0.4, y_coord - 0.4), 0.8, 0.8, 
-                                   color='gray', alpha=0.8))
-        elif structure_type == 'Apartment' or structure_type == 'Building':
-            axes.plot(x_coord, y_coord, 'o', color='saddlebrown', markersize=12)
-        elif structure_type == 'BandalgomCoffee':
-            axes.add_patch(Rectangle((x_coord - 0.3, y_coord - 0.3), 0.6, 0.6,
-                                   color='orange', alpha=0.8))
-            axes.text(x_coord, y_coord, 'C', ha='center', va='center', 
-                     fontsize=8, fontweight='bold', color='white')
-        elif structure_type == 'MyHome':
-            axes.add_patch(Rectangle((x_coord - 0.3, y_coord - 0.3), 0.6, 0.6,
-                                   color='green', alpha=0.8))
-            axes.text(x_coord, y_coord, 'H', ha='center', va='center', 
-                     fontsize=8, fontweight='bold', color='white')
-    
-    # 경로를 빨간 선으로 그리기
+            ax.add_patch(Rectangle((x - 0.4, y - 0.4), 0.8, 0.8, color='gray', alpha=0.6))
+        elif struct in ['Apartment', 'Building']:
+            ax.plot(x, y, 'o', color='saddlebrown', markersize=20)
+        elif struct == 'BandalgomCoffee':
+            ax.add_patch(Rectangle((x - 0.3, y - 0.3), 0.6, 0.6, color='green', alpha=0.9))
+        elif struct == 'MyHome':
+            ax.plot(x, y, marker='^', color='green', markersize=20)
+
     if path and len(path) > 1:
-        path_x_coords = [position[0] for position in path]
-        path_y_coords = [position[1] for position in path]
-        axes.plot(path_x_coords, path_y_coords, 'r-', linewidth=3, alpha=0.8, label='path')
-        
-        # 시작점과 끝점 표시
-        axes.plot(path_x_coords[0], path_y_coords[0], 'go', markersize=15, label='start')
-        axes.plot(path_x_coords[-1], path_y_coords[-1], 'ro', markersize=15, label='end')
-    
-    # 범례 추가
+        path_x_coords = [pos[0] for pos in path]
+        path_y_coords = [pos[1] for pos in path]
+        ax.plot(path_x_coords, path_y_coords, 'r-', linewidth=3, alpha=0.8, label='Path')
+        # path가 시작 및 끝에 구조물을 가리지 않기 위해 markersize를 0으로 설정
+        ax.plot(path_x_coords[0], path_y_coords[0], 'go', markersize=0, label='Start')
+        ax.plot(path_x_coords[-1], path_y_coords[-1], 'ro', markersize=0, label='End')
+
+    # 범례
     legend_elements = [
-        Line2D([0], [0], marker='s', color='w', markerfacecolor='green', 
-               markersize=10, label='MyHome'),
-        Line2D([0], [0], marker='s', color='w', markerfacecolor='orange', 
-               markersize=10, label='BandalgomCoffee'),
-        Line2D([0], [0], marker='o', color='w', markerfacecolor='saddlebrown', 
-               markersize=10, label='Apartment/Building'),
-        Line2D([0], [0], marker='s', color='w', markerfacecolor='gray', 
-               markersize=10, label='ConstructionSite'),
-        Line2D([0], [0], color='red', linewidth=3, label='path')
+        Line2D([0], [0], marker='o', color='w', label='Apartment/Building',
+               markerfacecolor='saddlebrown', markersize=8),
+        Line2D([0], [0], marker='s', color='w', label='BandalgomCoffee',
+               markerfacecolor='green', markersize=8),
+        Line2D([0], [0], marker='^', color='w', label='MyHome',
+               markerfacecolor='green', markersize=8),
+        Line2D([0], [0], marker='s', color='w', label='Construction Site',
+               markerfacecolor='gray', markersize=8),
+        Line2D([0], [0], color='red', linewidth=3, label='Path')
     ]
-    axes.legend(handles=legend_elements, loc='upper right')
-    
-    axes.set_title(map_title, fontsize=16, fontweight='bold')
-    axes.set_xlabel('X', fontsize=12)
-    axes.set_ylabel('Y', fontsize=12)
-    
+    ax.legend(handles=legend_elements, loc='upper left', fontsize=10)
+
+    ax.set_title(map_title, fontsize=14)
+    ax.set_xlabel('X Coordinate', fontsize=12)
+    ax.set_ylabel('Y Coordinate', fontsize=12)
+
     plt.tight_layout()
     plt.savefig(file_name, dpi=300, bbox_inches='tight')
-    plt.show()
+    plt.close()
     print(f'지도가 {file_name}에 저장되었습니다.')
-
 
 def main():
     """메인 실행 함수"""

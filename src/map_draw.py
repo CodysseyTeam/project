@@ -16,7 +16,7 @@ def draw_full_area_map():
         df['struct'] = df['struct'].replace('None', '')
         df['struct'] = df['struct'].replace('nan', '')
         
-    except FileNotFoundError:
+    except FileNotFoundError: # 파일 에러 있을 경우 출력
         print('result/full_map.csv 파일이 없습니다.')
         return
         
@@ -48,12 +48,12 @@ def draw_full_area_map():
             ax.add_patch(Rectangle((x - 0.4, y - 0.4), 0.8, 0.8, 
                                  color='gray', alpha=0.6))
         elif struct == 'Apartment' or struct == 'Building':
-            ax.plot(x, y, 'o', color='saddlebrown', markersize=8)
+            ax.plot(x, y, 'o', color='saddlebrown', markersize=20)
         elif struct == 'BandalgomCoffee':
             ax.add_patch(Rectangle((x - 0.3, y - 0.3), 0.6, 0.6, 
                                  color='green', alpha=0.9))
         elif struct == 'MyHome':
-            ax.plot(x, y, marker='^', color='green', markersize=12)
+            ax.plot(x, y, marker='^', color='green', markersize=20)
     
     # 범례
     legend_elements = [
@@ -66,7 +66,7 @@ def draw_full_area_map():
         Line2D([0], [0], marker='s', color='w', label='Construction Site',
                markerfacecolor='gray', markersize=8),
     ]
-    ax.legend(handles=legend_elements, loc='upper right', fontsize=10)
+    ax.legend(handles=legend_elements, loc='upper left', fontsize=10)
     
     ax.set_xlabel('X Coordinate', fontsize=12)
     ax.set_ylabel('Y Coordinate', fontsize=12)
