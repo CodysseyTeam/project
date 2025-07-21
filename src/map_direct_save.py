@@ -188,13 +188,6 @@ class PathFinder:
             if self.is_valid_position(new_x, new_y):
                 neighbors.append((new_x, new_y))
         
-        # 대각선 4방향 (대각선 이동)
-        diagonal_directions = [(1, 1), (1, -1), (-1, 1), (-1, -1)]
-        for delta_x, delta_y in diagonal_directions:
-            new_x, new_y = x_coord + delta_x, y_coord + delta_y
-            if self.is_valid_position(new_x, new_y):
-                neighbors.append((new_x, new_y))
-        
         return neighbors
     
     def calculate_distance(self, position1, position2):
@@ -254,15 +247,7 @@ class PathFinder:
                     # 경로의 총 거리 계산
                     total_distance = 0
                     for i in range(len(new_path) - 1):
-                        pos1, pos2 = new_path[i], new_path[i + 1]
-                        # 이동 방향에 따라 거리 계산
-                        move_distance = abs(pos2[0] - pos1[0]) + abs(pos2[1] - pos1[1])
-                        if move_distance == 2:
-                            # 대각선 이동: √2 ≈ 1.414
-                            total_distance += 2**0.5
-                        else:
-                            # 직선 이동: 1
-                            total_distance += 1
+                        total_distance += 1
                     
                     return new_path, total_distance
                 
