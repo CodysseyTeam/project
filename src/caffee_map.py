@@ -1,6 +1,5 @@
 import pandas as pd
 
-
 def load_and_analyze_data():
     """데이터를 불러와서 분석하고 병합하는 함수"""
     # 데이터 파일 불러오기
@@ -108,7 +107,6 @@ def generate_summary_report(df, category_mapping):
 
 
 def main():
-    """메인 실행 함수"""
     try:
         merged_df, area_1_df, category_mapping = load_and_analyze_data()
         generate_summary_report(merged_df, category_mapping)
