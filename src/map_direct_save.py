@@ -41,7 +41,7 @@ def generate_permutations(items):
     """
     주어진 리스트의 모든 순열(permutation)을 리스트로 반환하는 함수
     - itertools.permutations를 쓰지 않고 직접 구현
-    - TSP(외판원 문제) 등에서 사용 가능
+    - TSP(외판원 문제)에서 사용 가능
 
     예시: [1,2,3] → [
         [1,2,3], [1,3,2],
@@ -189,16 +189,7 @@ class PathFinder:
                 neighbors.append((new_x, new_y))
         
         return neighbors
-    
-    def calculate_distance(self, position1, position2):
-        """
-        두 위치 간의 직선 거리(유클리드 거리)를 계산하는 함수
-        - 실제로는 사용되지 않지만, 거리 계산이 필요할 때를 위해 준비된 함수
-        
-        공식: sqrt((x2-x1)² + (y2-y1)²)
-        """
-        return ((position1[0] - position2[0])**2 + (position1[1] - position2[1])**2)**0.5
-    
+
     def find_shortest_path_bfs(self, start_position, end_position):
         """
         BFS(너비 우선 탐색) 알고리즘을 사용해서 두 지점 간의 최단 경로를 찾는 함수
@@ -261,6 +252,7 @@ class PathFinder:
     def find_optimal_structure_tour(self):
         """
         TSP(외판원 문제) 알고리즘으로 모든 구조물을 지나는 최적 경로를 찾는 함수
+        > 사실상 TSP Path Variant이지만, 편의상 TSP로 수정함.
 
         반환값: 최적 투어 경로와 총 거리
         """

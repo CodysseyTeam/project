@@ -12,4 +12,4 @@
 
 ## ./src
 - 과제를 수행하기 위한 python 파일을 담고 있음.
-- `mas_map.py`, `map_draw.py`, `map_direct_save.py`
+- `caffee_map.py`, `map_draw.py`, `map_direct_save.py`
