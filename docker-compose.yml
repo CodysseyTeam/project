@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  coffee-pathfinding:
+    build: .
+    container_name: panda-bear-coffee-project
+    volumes:
+      # 결과 파일을 호스트와 공유
+      - ./result:/app/result
+      # 데이터 파일을 호스트와 공유 (읽기 전용)
+      - ./data:/app/data:ro
+    environment:
+      - PYTHONPATH=/app/src
+      - PYTHONUNBUFFERED=1
+    command: >
+      sh -c "
+        echo '🚀 Docker 컨테이너에서 반달곰 커피 경로 탐색 프로젝트를 시작합니다...' &&
+        echo '1️⃣ 데이터 전처리 및 분석 중...' &&
+        python src/caffee_map.py &&
+        echo '2️⃣ 기본 지도 생성 중...' &&
+        python src/map_draw.py &&
+        echo '3️⃣ BFS 경로 탐색 및 TSP 해결 중...' &&
+        python src/map_direct_save.py &&
+        echo '✅ 프로젝트 실행이 완료되었습니다!' &&
+        echo '📁 결과 파일들은 ./result 폴더에 저장되었습니다.' &&
+        ls -la result/
+      "
+    # 컨테이너가 종료되지 않도록 유지
+    tty: true
+    stdin_open: true
+
+  # 개발용 서비스 (대화형 실행)
+  coffee-pathfinding-dev:
+    build: .
+    container_name: panda-bear-coffee-dev
+    volumes:
+      - ./result:/app/result
+      - ./data:/app/data:ro
+      - ./src:/app/src:ro
+    environment:
+      - PYTHONPATH=/app/src
+      - PYTHONUNBUFFERED=1
+    command: /bin/bash
+    tty: true
+    stdin_open: true
+    profiles:
+      - dev
