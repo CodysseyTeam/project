@@ -133,7 +133,7 @@ make docker-run
 
 ```bash
 # 1. 저장소 클론
-git clone https://github.com/kyowon1108/project.git
+git clone https://github.com/CodysseyTeam/project.git
 cd project
 
 # 2. 가상환경 구성
@@ -364,7 +364,7 @@ make docker-run
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/kyowon1108/project.git
+git clone https://github.com/CodysseyTeam/project.git
 cd project
 
 # 2. Set up virtual environment
