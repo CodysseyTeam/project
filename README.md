@@ -27,6 +27,15 @@ project/
 │   ├── map_final.png        # 최단 경로 포함 지도
 │   └── map_tour.png         # 투어 경로 포함 지도
 ├── requirements.txt         # 의존성 패키지 목록
+├── pyproject.toml           # Python 프로젝트 설정
+├── Makefile                 # 프로젝트 관리 스크립트
+├── run_project.sh           # Linux/Mac 실행 스크립트
+├── run_project.bat          # Windows 실행 스크립트
+├── docker-run.sh            # Linux/Mac Docker 실행 스크립트
+├── docker-run.bat           # Windows Docker 실행 스크립트
+├── Dockerfile               # Docker 이미지 정의
+├── docker-compose.yml       # Docker Compose 설정
+├── .dockerignore            # Docker 빌드 제외 파일
 ├── README.md                # 프로젝트 설명
 └── .gitignore               # Git 무시 파일 설정
 ```
@@ -100,7 +109,27 @@ class PathFinder:
 
 ## 🚀 실행 방법
 
-### 환경 설정
+### 방법 1: Docker 사용 (권장 - OS 독립적)
+
+#### Docker 설치
+- **Windows/Mac**: [Docker Desktop](https://www.docker.com/products/docker-desktop)
+- **Linux**: [Docker Engine](https://docs.docker.com/engine/install/)
+
+#### Docker로 실행
+```bash
+# Linux/Mac
+./docker-run.sh
+
+# Windows
+docker-run.bat
+
+# 또는 Makefile 사용
+make docker-run
+```
+
+### 방법 2: 로컬 환경 설정
+
+#### 환경 설정
 
 ```bash
 # 1. 저장소 클론
@@ -115,16 +144,20 @@ source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 실행 순서
+#### 실행 순서
 
 ```bash
-# 1. 데이터 전처리 및 분석
+# 1. 자동 실행 (권장)
+./run_project.sh  # Linux/Mac
+run_project.bat   # Windows
+
+# 2. Makefile 사용
+make setup    # 초기 설정
+make run      # 프로젝트 실행
+
+# 3. 수동 실행
 python src/caffee_map.py
-
-# 2. 기본 지도 생성
 python src/map_draw.py
-
-# 3. BFS 경로 탐색 및 TSP 해결
 python src/map_direct_save.py
 ```
 
@@ -177,6 +210,23 @@ python src/map_direct_save.py
 - **데이터 사이언스**: 실제 데이터의 전처리, 분석, 시각화 파이프라인
 - **소프트웨어 엔지니어링**: 모듈화, 문서화, 에러 처리 등의 모범 사례
 
+## 🐳 Docker 사용의 장점
+
+### OS 독립성
+- **Windows, macOS, Linux**: 동일한 환경에서 실행
+- **의존성 문제 해결**: Python 버전, 라이브러리 버전 충돌 방지
+- **일관된 결과**: 모든 환경에서 동일한 결과 보장
+
+### 개발 편의성
+- **빠른 설정**: Docker만 설치하면 즉시 실행 가능
+- **환경 격리**: 로컬 시스템에 영향 없음
+- **쉬운 정리**: 컨테이너 삭제로 깔끔한 정리
+
+### 배포 용이성
+- **이식성**: 다른 시스템으로 쉽게 이전
+- **확장성**: 여러 인스턴스 동시 실행 가능
+- **버전 관리**: 이미지 태그로 버전 관리
+
 ---
 
 # 📘 Finding Panda-Bear Coffee: Data Analysis and Pathfinding Project
@@ -208,6 +258,15 @@ project/
 │   ├── map_final.png        # Map with shortest path
 │   └── map_tour.png         # Map with tour path
 ├── requirements.txt         # Dependency package list
+├── pyproject.toml           # Python project configuration
+├── Makefile                 # Project management script
+├── run_project.sh           # Linux/Mac execution script
+├── run_project.bat          # Windows execution script
+├── docker-run.sh            # Linux/Mac Docker execution script
+├── docker-run.bat           # Windows Docker execution script
+├── Dockerfile               # Docker image definition
+├── docker-compose.yml       # Docker Compose configuration
+├── .dockerignore            # Docker build exclusion files
 ├── README.md                # Project description
 └── .gitignore               # Git ignore file settings
 ```
@@ -281,7 +340,27 @@ class PathFinder:
 
 ## 🚀 How to Run
 
-### Environment Setup
+### Method 1: Using Docker (Recommended - OS Independent)
+
+#### Docker Installation
+- **Windows/Mac**: [Docker Desktop](https://www.docker.com/products/docker-desktop)
+- **Linux**: [Docker Engine](https://docs.docker.com/engine/install/)
+
+#### Run with Docker
+```bash
+# Linux/Mac
+./docker-run.sh
+
+# Windows
+docker-run.bat
+
+# Or using Makefile
+make docker-run
+```
+
+### Method 2: Local Environment Setup
+
+#### Environment Setup
 
 ```bash
 # 1. Clone repository
@@ -296,16 +375,20 @@ source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### Execution Order
+#### Execution Order
 
 ```bash
-# 1. Data preprocessing and analysis
+# 1. Auto execution (recommended)
+./run_project.sh  # Linux/Mac
+run_project.bat   # Windows
+
+# 2. Using Makefile
+make setup    # Initial setup
+make run      # Project execution
+
+# 3. Manual execution
 python src/caffee_map.py
-
-# 2. Generate basic map
 python src/map_draw.py
-
-# 3. BFS pathfinding and TSP solving
 python src/map_direct_save.py
 ```
 
@@ -357,3 +440,20 @@ After execution, the following files are generated in the `result/` folder:
 - **Optimization Problems**: Approaches to NP-hard problems like TSP
 - **Data Science**: Real data preprocessing, analysis, and visualization pipeline
 - **Software Engineering**: Best practices in modularization, documentation, and error handling
+
+## 🐳 Benefits of Using Docker
+
+### OS Independence
+- **Windows, macOS, Linux**: Run in identical environment
+- **Dependency Resolution**: Prevent Python version and library conflicts
+- **Consistent Results**: Guarantee identical results across all environments
+
+### Development Convenience
+- **Quick Setup**: Run immediately after Docker installation
+- **Environment Isolation**: No impact on local system
+- **Easy Cleanup**: Clean removal by deleting containers
+
+### Deployment Ease
+- **Portability**: Easy transfer to other systems
+- **Scalability**: Run multiple instances simultaneously
+- **Version Management**: Version control with image tags

@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "panda-bear-coffee-pathfinding"
+version = "1.0.0"
+description = "BFS 알고리즘을 활용한 반달곰 커피 최단 경로 탐색 시스템"
+authors = [
+    {name = "Project Author", email = "author@example.com"}
+]
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = [
+    "matplotlib>=3.5.0",
+    "pandas>=1.3.0",
+    "numpy>=1.21.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "jupyter>=1.0.0",
+    "ipykernel>=6.0.0",
+    "seaborn>=0.11.0",
+    "openpyxl>=3.0.0",
+]
+
+[project.scripts]
+run-coffee-pathfinding = "src.main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.csv", "*.md", "*.txt"]
+
+[project.urls]
+Homepage = "https://github.com/kyowon1108/project"
+Repository = "https://github.com/kyowon1108/project"
+Issues = "https://github.com/kyowon1108/project/issues" 
